@@ -11,7 +11,7 @@ from hashlib import md5
 from encodings import utf_8
 SEED = 99999
 random.seed(SEED)
-MAX_RET = 100 # Only retrieval a maximum of this much docs
+MAX_RET = 100 # Only retrieve a maximum of this much docs
 
 # Read the data and make dict of plausible numbers for each attribute 
 df = pd.read_csv('tmdb-5000-movies.csv.gz', compression='gzip')
