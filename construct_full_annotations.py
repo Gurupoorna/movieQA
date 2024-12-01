@@ -11,6 +11,7 @@ from hashlib import md5
 from encodings import utf_8
 SEED = 99999
 random.seed(SEED)
+MAX_RET = 100 # Only retrieval a maximum of this much docs
 
 # Read the data and make dict of plausible numbers for each attribute 
 df = pd.read_csv('tmdb-5000-movies.csv.gz', compression='gzip')
@@ -343,6 +344,7 @@ def r_and_r_docs(query_list, numbers_df, debug=False):
             q_ret_pairs.append({'q':query['q'], 'qid':query['qid'], 'rrdf':combret})
             continue
         combret = combret.sort_values(by='score').drop(columns='score')
+        if len(combret)>MAX_RET: combret = combret.iloc[:MAX_RET,:]
         q_ret_pairs.append({'q':query['q'], 'qid':query['qid'], 'rrdf':combret})
         if debug: break
     return q_ret_pairs
@@ -407,6 +409,6 @@ if __name__=='__main__':
         for q in numified_queries:
             for n in q['nums']:
                 if isinstance(n['quantity'], np.int64): n['quantity'] = int(n['quantity'])
-        with open(file_to_write_final, '+a') as f:
+        with open(file_to_write_final, '+w') as f:
             json.dump(numified_queries, f, indent=4,)
         print(f"Written to file {file_to_write_final}.")
