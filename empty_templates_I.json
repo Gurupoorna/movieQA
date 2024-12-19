@@ -1,0 +1,904 @@
+[
+    {
+        "q#": "<<>> movie with popularity more than <<>> and within <<>> budget.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "popularity", "operation": "greaterthan"},
+            {"index": 3, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "<<>> movie within <<>> budget that was shot in at least <<>> countries.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "budget", "operation": "lessthan"},
+            {"index": 3, "type": "no_production_countries", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Over <<>> revenue movie between <<>> and <<>>.",
+        "nums": [
+            {"index": 1, "type": "revenue", "operation": "greaterthan"},
+            {"index": 2, "type": "release_date", "operation": "between"},
+            {"index": 3, "type": "release_date", "operation": "between"}
+        ]
+    },
+    {
+        "q#": "Movie with popularity between <<>> to <<>> from <<>> countries and around <<>> budget.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "between"},
+            {"index": 2, "type": "popularity", "operation": "between"},
+            {"index": 3, "type": "no_production_countries", "operation": "exact"},
+            {"index": 4, "type": "budget", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Movie between <<>> and <<>> revenue with runtime near <<>> and released before <<>>.",
+        "nums": [
+            {"index": 1, "type": "revenue", "operation": "between"},
+            {"index": 2, "type": "revenue", "operation": "between"},
+            {"index": 3, "type": "runtime", "operation": "around"},
+            {"index": 4, "type": "release_date", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "<<>> budget movie around <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "exact"},
+            {"index": 2, "type": "runtime", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Show me movies with budget no more than <<>> produced in <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "lessthan"},
+            {"index": 2, "type": "no_production_countries", "operation": "exact"}
+        ]
+    },
+    {
+        "q#": "Movies released between <<>> and <<>> with popularity greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "between"},
+            {"index": 2, "type": "release_date", "operation": "between"},
+            {"index": 3, "type": "popularity", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies produced in no more than <<>> countries with runtime over <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "lessthan"},
+            {"index": 2, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Find movies with revenue between <<>> and <<>> and budget under <<>>.",
+        "nums": [
+            {"index": 1, "type": "revenue", "operation": "between"},
+            {"index": 2, "type": "revenue", "operation": "between"},
+            {"index": 3, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies with runtime around <<>> and popularity less than <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "around"},
+            {"index": 2, "type": "popularity", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies released after <<>> with revenue exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "greaterthan"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with runtime under <<>> and revenue greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "lessthan"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies shot in exactly <<>> countries with a budget over <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "exact"},
+            {"index": 2, "type": "budget", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies released exactly in <<>> with popularity around <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "popularity", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Movies produced in at least <<>> countries with runtime over <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "atleast"},
+            {"index": 2, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies released in the <<>>s with budget under <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "in"},
+            {"index": 2, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Find movies with a runtime less than <<>> and revenue around <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "lessthan"},
+            {"index": 2, "type": "revenue", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "List movies where the number of production companies is at least <<>> and budget under <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_companies", "operation": "atleast"},
+            {"index": 2, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies released between <<>> and <<>> with revenue over <<>> and runtime more than <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "between"},
+            {"index": 2, "type": "release_date", "operation": "between"},
+            {"index": 3, "type": "revenue", "operation": "greaterthan"},
+            {"index": 4, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Show me movies with a budget exactly <<>> produced in at least <<>> countries.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "exact"},
+            {"index": 2, "type": "no_production_countries", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies with popularity no more than <<>> and released within the <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "lessthan"},
+            {"index": 2, "type": "release_date", "operation": "in"}
+        ]
+    },
+    {
+        "q#": "Find movies with a runtime over <<>> and revenue exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "greaterthan"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with budget no less than <<>> and popularity around <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "greaterthan"},
+            {"index": 2, "type": "popularity", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Movies produced in <<>> countries with runtime around <<>> and revenue exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "exact"},
+            {"index": 2, "type": "runtime", "operation": "around"},
+            {"index": 3, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "List movies released in <<>> with popularity above <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "popularity", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with a runtime between <<>> and <<>> and budget less than <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "between"},
+            {"index": 2, "type": "runtime", "operation": "between"},
+            {"index": 3, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies with budget within <<>> and <<>> and revenue near <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "between"},
+            {"index": 2, "type": "budget", "operation": "between"},
+            {"index": 3, "type": "revenue", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Find movies with exactly <<>> production companies and revenue greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_companies", "operation": "exact"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies released after <<>> with runtime under <<>> and popularity above <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "greaterthan"},
+            {"index": 2, "type": "runtime", "operation": "lessthan"},
+            {"index": 3, "type": "popularity", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Show me movies with a budget exceeding <<>> and runtime more than <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "greaterthan"},
+            {"index": 2, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies released in <<>>s with revenue within <<>> and <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "in"},
+            {"index": 2, "type": "revenue", "operation": "between"},
+            {"index": 3, "type": "revenue", "operation": "between"}
+        ]
+    },
+    {
+        "q#": "Find movies with revenue exceeding <<>> and runtime around <<>>.",
+        "nums": [
+            {"index": 1, "type": "revenue", "operation": "greaterthan"},
+            {"index": 2, "type": "runtime", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Movies produced in <<>> countries with popularity less than <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "exact"},
+            {"index": 2, "type": "popularity", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies released before <<>> with runtime exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "lessthan"},
+            {"index": 2, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with a budget of around <<>> and runtime under <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "around"},
+            {"index": 2, "type": "runtime", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies with popularity between <<>> and <<>> released after <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "between"},
+            {"index": 2, "type": "popularity", "operation": "between"},
+            {"index": 3, "type": "release_date", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with a budget of exactly <<>> produced in <<>> and runtime more than <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "exact"},
+            {"index": 2, "type": "no_production_countries", "operation": "exact"},
+            {"index": 3, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Find movies released after <<>> with budget no more than <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "greaterthan"},
+            {"index": 2, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Show me movies produced in at least <<>> countries with revenue around <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "atleast"},
+            {"index": 2, "type": "revenue", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Movies released in <<>> with popularity less than <<>> and runtime above <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "popularity", "operation": "lessthan"},
+            {"index": 3, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "List movies with budget over <<>> and released after <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "greaterthan"},
+            {"index": 2, "type": "release_date", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with runtime less than <<>> and budget under <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "lessthan"},
+            {"index": 2, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies released in <<>> produced in no more than <<>> countries.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "no_production_countries", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Find movies with revenue greater than <<>> and popularity over <<>>.",
+        "nums": [
+            {"index": 1, "type": "revenue", "operation": "greaterthan"},
+            {"index": 2, "type": "popularity", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies released between <<>> and <<>> with runtime exactly <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "between"},
+            {"index": 2, "type": "release_date", "operation": "between"},
+            {"index": 3, "type": "runtime", "operation": "exact"}
+        ]
+    },
+    {
+        "q#": "Movies with budget within <<>> and <<>> and runtime over <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "between"},
+            {"index": 2, "type": "budget", "operation": "between"},
+            {"index": 3, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies produced in exactly <<>> countries with a revenue of <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "exact"},
+            {"index": 2, "type": "revenue", "operation": "exact"}
+        ]
+    },
+    {
+        "q#": "Find movies released before <<>> with budget under <<>> and runtime near <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "lessthan"},
+            {"index": 2, "type": "budget", "operation": "lessthan"},
+            {"index": 3, "type": "runtime", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Show me movies with popularity around <<>> and revenue greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "around"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with runtime well below <<>> and budget much less than <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "atmost"},
+            {"index": 2, "type": "budget", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Movies produced in no more than <<>> countries with popularity not greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "atmost"},
+            {"index": 2, "type": "popularity", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Movies with a rating between <<>> and <<>>.",
+        "nums": [
+            {"index": 1, "type": "vote_average", "operation": "between"},
+            {"index": 2, "type": "vote_average", "operation": "between"}
+        ]
+    },
+    {
+        "q#": "Movies released long before <<>> with revenue well below <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "atmost"},
+            {"index": 2, "type": "revenue", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Movies with runtime no less than <<>> and budget above <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "atleast"},
+            {"index": 2, "type": "budget", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies produced in at least <<>> countries with runtime above <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "atleast"},
+            {"index": 2, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Find movies released exactly in <<>> with a rating around <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "vote_average", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Movies with a budget around <<>> and runtime well above <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "around"},
+            {"index": 2, "type": "runtime", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies with popularity between <<>> and <<>> produced in at most <<>> companies.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "between"},
+            {"index": 2, "type": "popularity", "operation": "between"},
+            {"index": 3, "type": "no_production_companies", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Movies released way before <<>> with revenue exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "atmost"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Find movies with runtime around <<>> and revenue greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "around"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with a rating between <<>> and <<>>.",
+        "nums": [
+            {"index": 1, "type": "vote_average", "operation": "between"},
+            {"index": 2, "type": "vote_average", "operation": "between"}
+        ]
+    },
+    {
+        "q#": "List movies released in the <<>>s with a budget exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "in"},
+            {"index": 2, "type": "budget", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies produced in exactly <<>> countries with runtime near <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "exact"},
+            {"index": 2, "type": "runtime", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Show me movies with rating higher than <<>> and popularity no more than <<>>.",
+        "nums": [
+            {"index": 1, "type": "vote_average", "operation": "greaterthan"},
+            {"index": 2, "type": "popularity", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Movies released after <<>> with runtime less than <<>> and budget around <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "greaterthan"},
+            {"index": 2, "type": "runtime", "operation": "lessthan"},
+            {"index": 3, "type": "budget", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Movies with a budget well above <<>> and rating exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "atleast"},
+            {"index": 2, "type": "vote_average", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies released between <<>> and <<>> with revenue much greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "between"},
+            {"index": 2, "type": "release_date", "operation": "between"},
+            {"index": 3, "type": "revenue", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies with popularity exactly <<>> and runtime no more than <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "exact"},
+            {"index": 2, "type": "runtime", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Find movies with revenue much greater than <<>> and runtime well below <<>>.",
+        "nums": [
+            {"index": 1, "type": "revenue", "operation": "atleast"},
+            {"index": 2, "type": "runtime", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Movies released after <<>> with a budget not greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "greaterthan"},
+            {"index": 2, "type": "budget", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Movies with popularity well above <<>> and runtime higher than <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "atleast"},
+            {"index": 2, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies produced in at most <<>> countries with revenue below <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "atmost"},
+            {"index": 2, "type": "revenue", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "List movies released long before <<>> with rating exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "atmost"},
+            {"index": 2, "type": "vote_average", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with budget well above <<>> and runtime no more than <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "atleast"},
+            {"index": 2, "type": "runtime", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Find movies with a runtime between <<>> and <<>> and popularity much above <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "between"},
+            {"index": 2, "type": "runtime", "operation": "between"},
+            {"index": 3, "type": "popularity", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies released exactly in <<>> with a budget exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "budget", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies produced in <<>> countries with a budget no less than <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "exact"},
+            {"index": 2, "type": "budget", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies released post <<>> with popularity around <<>> and runtime exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "greaterthan"},
+            {"index": 2, "type": "popularity", "operation": "around"},
+            {"index": 3, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Find movies released in the <<>>s with a budget of exactly <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "in"},
+            {"index": 2, "type": "budget", "operation": "exact"}
+        ]
+    },
+    {
+        "q#": "Movies produced in at least <<>> countries with revenue near <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "atleast"},
+            {"index": 2, "type": "revenue", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Show me movies with popularity under <<>> and runtime well above <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "lessthan"},
+            {"index": 2, "type": "runtime", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies with a runtime exactly <<>> and budget exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "exact"},
+            {"index": 2, "type": "budget", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with rating not less than <<>> and popularity much greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "vote_average", "operation": "atleast"},
+            {"index": 2, "type": "popularity", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies with revenue within <<>> and <<>> and runtime below <<>>.",
+        "nums": [
+            {"index": 1, "type": "revenue", "operation": "between"},
+            {"index": 2, "type": "revenue", "operation": "between"},
+            {"index": 3, "type": "runtime", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "List movies released before <<>> with budget under <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "lessthan"},
+            {"index": 2, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies released in <<>> with runtime exactly <<>> and rating exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "runtime", "operation": "exact"},
+            {"index": 3, "type": "vote_average", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with budget within <<>> and <<>> produced in at least <<>> countries.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "between"},
+            {"index": 2, "type": "budget", "operation": "between"},
+            {"index": 3, "type": "no_production_countries", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies with runtime near <<>> and revenue exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "around"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Find movies with a budget around <<>> and released in the <<>>s.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "around"},
+            {"index": 2, "type": "release_date", "operation": "in"}
+        ]
+    },
+    {
+        "q#": "Movies released after <<>> with rating under <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "greaterthan"},
+            {"index": 2, "type": "vote_average", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies produced in no more than <<>> countries with revenue exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "atmost"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies released long after <<>> with runtime above <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "atleast"},
+            {"index": 2, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with runtime no less than <<>> and budget exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "atleast"},
+            {"index": 2, "type": "budget", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Find movies with a budget at most <<>> and revenue well above <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "atmost"},
+            {"index": 2, "type": "revenue", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies released in <<>> with popularity exactly <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "popularity", "operation": "exact"}
+        ]
+    },
+    {
+        "q#": "List movies with a runtime between <<>> and <<>> and rating below <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "between"},
+            {"index": 2, "type": "runtime", "operation": "between"},
+            {"index": 3, "type": "vote_average", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies released long before <<>> with a runtime around <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "atmost"},
+            {"index": 2, "type": "runtime", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Movies produced in <<>> countries with a budget at least <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "exact"},
+            {"index": 2, "type": "budget", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies with popularity well below <<>> and runtime exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "atmost"},
+            {"index": 2, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Find movies with a runtime around <<>> and revenue exceeding <<>>, released after <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "around"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"},
+            {"index": 3, "type": "release_date", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "List movies with popularity below <<>>, runtime more than <<>>, and released before <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "lessthan"},
+            {"index": 2, "type": "runtime", "operation": "greaterthan"},
+            {"index": 3, "type": "release_date", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Show me movies with budget around <<>>, runtime at least <<>>, and popularity exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "around"},
+            {"index": 2, "type": "runtime", "operation": "atleast"},
+            {"index": 3, "type": "popularity", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies released between <<>> and <<>> with a runtime under <<>> and revenue over <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "between"},
+            {"index": 2, "type": "release_date", "operation": "between"},
+            {"index": 3, "type": "runtime", "operation": "lessthan"},
+            {"index": 4, "type": "revenue", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with popularity no more than <<>>, budget below <<>>, and runtime near <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "atmost"},
+            {"index": 2, "type": "budget", "operation": "lessthan"},
+            {"index": 3, "type": "runtime", "operation": "around"}
+        ]
+    },
+    {
+        "q#": "Movies released well before <<>>, with revenue exceeding <<>>, runtime around <<>>, and budget under <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "atmost"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"},
+            {"index": 3, "type": "runtime", "operation": "around"},
+            {"index": 4, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Find movies with a runtime over <<>>, budget at least <<>>, popularity below <<>>, and released post <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "greaterthan"},
+            {"index": 2, "type": "budget", "operation": "atleast"},
+            {"index": 3, "type": "popularity", "operation": "lessthan"},
+            {"index": 4, "type": "release_date", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies produced in exactly <<>> countries with revenue above <<>>, runtime less than <<>>, and released after <<>>.",
+        "nums": [
+            {"index": 1, "type": "no_production_countries", "operation": "exact"},
+            {"index": 2, "type": "revenue", "operation": "greaterthan"},
+            {"index": 3, "type": "runtime", "operation": "lessthan"},
+            {"index": 4, "type": "release_date", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Show me movies with a budget between <<>> and <<>>, revenue at least <<>>, and popularity well below <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "between"},
+            {"index": 2, "type": "budget", "operation": "between"},
+            {"index": 3, "type": "revenue", "operation": "atleast"},
+            {"index": 4, "type": "popularity", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "List movies where runtime is around <<>>, budget is exactly <<>>, and popularity is greater than <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "around"},
+            {"index": 2, "type": "budget", "operation": "exact"},
+            {"index": 3, "type": "popularity", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies released in <<>> with rating exceeding <<>> and runtime much less than <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "exact"},
+            {"index": 2, "type": "vote_average", "operation": "greaterthan"},
+            {"index": 3, "type": "runtime", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Movies with popularity around <<>>, revenue under <<>>, runtime well above <<>>, and released before <<>>.",
+        "nums": [
+            {"index": 1, "type": "popularity", "operation": "around"},
+            {"index": 2, "type": "revenue", "operation": "lessthan"},
+            {"index": 3, "type": "runtime", "operation": "atleast"},
+            {"index": 4, "type": "release_date", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies with a budget near <<>>, produced in at least <<>> countries, and runtime exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "around"},
+            {"index": 2, "type": "no_production_countries", "operation": "atleast"},
+            {"index": 3, "type": "runtime", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Movies with revenue above <<>>, rating well below <<>>, runtime more than <<>>, and budget under <<>>.",
+        "nums": [
+            {"index": 1, "type": "revenue", "operation": "greaterthan"},
+            {"index": 2, "type": "vote_average", "operation": "atmost"},
+            {"index": 3, "type": "runtime", "operation": "greaterthan"},
+            {"index": 4, "type": "budget", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Movies with a runtime no less than <<>>, budget around <<>>, released in <<>>, and popularity exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "atleast"},
+            {"index": 2, "type": "budget", "operation": "around"},
+            {"index": 3, "type": "release_date", "operation": "exact"},
+            {"index": 4, "type": "popularity", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Find movies with revenue between <<>> and <<>>, runtime near <<>>, and popularity no more than <<>>.",
+        "nums": [
+            {"index": 1, "type": "revenue", "operation": "between"},
+            {"index": 2, "type": "revenue", "operation": "between"},
+            {"index": 3, "type": "runtime", "operation": "around"},
+            {"index": 4, "type": "popularity", "operation": "atmost"}
+        ]
+    },
+    {
+        "q#": "Movies with runtime much greater than <<>>, released long after <<>>, and popularity exceeding <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "atleast"},
+            {"index": 2, "type": "release_date", "operation": "atleast"},
+            {"index": 3, "type": "popularity", "operation": "greaterthan"}
+        ]
+    },
+    {
+        "q#": "Show me movies with budget below <<>>, runtime around <<>>, released in <<>>, and revenue well above <<>>.",
+        "nums": [
+            {"index": 1, "type": "budget", "operation": "lessthan"},
+            {"index": 2, "type": "runtime", "operation": "around"},
+            {"index": 3, "type": "release_date", "operation": "exact"},
+            {"index": 4, "type": "revenue", "operation": "atleast"}
+        ]
+    },
+    {
+        "q#": "Movies with runtime over <<>>, budget within <<>> and <<>>, and rating below <<>>.",
+        "nums": [
+            {"index": 1, "type": "runtime", "operation": "greaterthan"},
+            {"index": 2, "type": "budget", "operation": "between"},
+            {"index": 3, "type": "budget", "operation": "between"},
+            {"index": 4, "type": "vote_average", "operation": "lessthan"}
+        ]
+    },
+    {
+        "q#": "Find movies released after <<>>, produced in at least <<>> companies, and runtime around <<>>.",
+        "nums": [
+            {"index": 1, "type": "release_date", "operation": "greaterthan"},
+            {"index": 2, "type": "no_production_companies", "operation": "atleast"},
+            {"index": 3, "type": "runtime", "operation": "around"}
+        ]
+    }
+]
