@@ -1,0 +1,34 @@
+{
+    "Deltas" : {
+        "revenue": 10000,
+        "budget": 10000,
+        "runtime": 1,
+        "release_date": "pd.Timedelta(1,'D')",
+        "popularity": 0.1,
+        "vote_average": 0.5,
+        "no_production_companies": 1,
+        "no_production_countries": 1
+    },
+    "thresholds" : {        
+        "revenue": 100000000,
+        "budget": 20000000,
+        "runtime": 10,
+        "release_date": "pd.Timedelta(50,'W')",
+        "popularity": 10,
+        "vote_average": 3,
+        "no_production_companies": 2,
+        "no_production_countries": 2
+    },
+    "cutoffs" : {
+        "revenue": 700000000,            
+        "budget": 70000000,                    
+        "runtime": 30,                          
+        "release_date": "pd.Timedelta(1040,'W')", 
+        "popularity": 50,                       
+        "vote_average": 8,                      
+        "no_production_companies": 9,           
+        "no_production_countries": 7    
+    },
+    "uniform": "True",
+    "ssize": 50
+}

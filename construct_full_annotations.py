@@ -5,13 +5,17 @@ from pprint import pprint, pformat
 from copy import copy, deepcopy
 import re
 import random
+from collections import defaultdict
 import humanize
 from num2words import num2words
 from hashlib import md5
 from encodings import utf_8
+import argparse
+import pydoc
 SEED = 99999
 random.seed(SEED)
 MAX_RET = 100 # Only retrieve a maximum of this much docs
+DEBUG=False
 
 # Read the data and make dict of plausible numbers for each attribute 
 df = pd.read_csv('tmdb-5000-movies.csv.gz', compression='gzip')
@@ -24,34 +28,60 @@ ndf['no_production_countries'] = ndf.apply(lambda row: len(json.loads(row['produ
 ndf = ndf.drop(['production_companies','production_countries'], axis=1)
 ndf = ndf.dropna()
 ndf = ndf.drop(index=ndf[(ndf['budget']==0) | (ndf['revenue']==0)].index)
-numbers = dict()
-for cat in ndf.columns[2:]:
-    numbers[cat] = ndf[cat].unique()
-numbers.pop('production_companies_names')
-numbers.pop('production_countries_names')
-numbers['revenue'] = numbers['revenue'][numbers['revenue']>0]
-numbers['budget'] = numbers['budget'][numbers['budget']>0]
-numbers['runtime'] = numbers['runtime'][pd.notna(numbers['runtime'])]
-numbers['no_production_companies'][numbers['no_production_companies']==0] = 1
-numbers['no_production_countries'][numbers['no_production_countries']==0] = 1
+
+Deltas_def = {
+    'revenue': int(10e3),
+    'budget': int(10e3),
+    'runtime': 1,
+    'release_date': pd.Timedelta(1,'D'),
+    'popularity': 0.1,
+    'vote_average': 0.5,
+    'no_production_companies': 1,
+    'no_production_countries': 1,
+}
+ssize_def = 100
+def collect_numbers(Deltas=Deltas_def, uniform=False, sample_size=ssize_def):
+    numbers = dict()
+    if uniform:
+        numbers['revenue'] = lambda : random.randrange(ndf.loc[ndf['revenue']>0, 'revenue'].min(),ndf.loc[ndf['revenue']>0, 'revenue'].max(),Deltas['revenue'])
+        numbers['budget'] = lambda : random.randrange(ndf.loc[ndf['budget']>0, 'budget'].min(),ndf.loc[ndf['budget']>0, 'budget'].max(),Deltas['budget'])
+        numbers['runtime'] = lambda : random.randrange(ndf.loc[ndf['runtime']>0, 'runtime'].astype(int).min(),ndf.loc[ndf['runtime']>0, 'runtime'].astype(int).max(),Deltas['runtime'])
+        numbers['release_date'] = lambda : pd.to_datetime(random.randrange(ndf['release_date'].min().value,ndf['release_date'].max().value,Deltas['release_date'].value))
+        numbers['popularity'] = lambda : random.randrange(int(ndf.loc[ndf['popularity']>0, 'popularity'].min()*100),int(ndf.loc[ndf['popularity']>0, 'popularity'].max()*100),int(Deltas['popularity']*100))/100
+        numbers['vote_average'] = lambda : random.randrange(int(ndf.loc[ndf['vote_average']>0, 'vote_average'].min()*100),int(ndf.loc[ndf['vote_average']>0, 'vote_average'].max()*100),int(Deltas['vote_average']*100))/100
+        numbers['no_production_companies'] = lambda : random.randrange(ndf.loc[ndf['no_production_companies']>0, 'no_production_companies'].min(),ndf.loc[ndf['no_production_companies']>0, 'no_production_companies'].max(),Deltas['no_production_companies'])
+        numbers['no_production_countries'] = lambda : random.randrange(ndf.loc[ndf['no_production_countries']>0, 'no_production_countries'].min(),ndf.loc[ndf['no_production_countries']>0, 'no_production_countries'].max(),Deltas['no_production_countries'])
+        if DEBUG: 
+            print('calling fn in numbers ...')
+            for ccat in numbers.keys(): print(ccat, ' : \t', numbers[ccat](), numbers[ccat](), numbers[ccat](), numbers[ccat](), numbers[ccat]())
+        return numbers
+    for cat in ndf.columns[2:]:
+        if cat in ['production_companies_names', 'production_countries_names']: continue
+        nonzro = ((ndf[cat]>0) & (pd.notna(ndf[cat]))) if cat != 'release_date' else ndf.index
+        numbers[cat] = random.choices(list(ndf.loc[nonzro, cat]), k=sample_size)
+        # numbers[cat] = list(pd.Series(numbers[cat])[pd.notna(numbers[cat])]) if cat != 'release_date' else numbers[cat]
+    if DEBUG: print('numbers is ----\n', numbers)
+    return numbers
 
 # <<>> position numbering of numerical entities
 def numb_positions(q_list):
     for query in q_list:
         line = query['q#']
-        linec = query['q']
         patt = re.compile("<<[\w\s\W]*?>>")
         fdfd = patt.finditer(line)
         markers = []
         for i, mm in enumerate(fdfd):
             markers.append((mm.span()[0]-i*4 , mm.span()[1]-(i+1)*4))
             query['nums'][i]['startposition'] , query['nums'][i]['endposition'] = markers[i]
-        highlight = [' ']*len(line)
-        for n in query['nums']:
-            a, b = n['startposition'], n['endposition']
-            highlight[a:b] = ['^']*(b-a)
-        print(linec)
-        print(''.join(highlight))
+def display_q(query):
+    highlight = [' ']*len(query['q#'])
+    for n in query['nums']:
+        a, b = n['startposition'], n['endposition']
+        highlight[a:b] = ['^']*(b-a)
+    disp_text = query['q']+'\n'
+    disp_text += ''.join(highlight)
+    return disp_text
+
 
 # Helper function to generate human-readable values
 def generate_human_readable(value, attribute, oprn):
@@ -68,14 +98,18 @@ def generate_human_readable(value, attribute, oprn):
             format, scalefactor, unit, quantity = random.choice(options)
             humn_text = value.strftime(format=format)
             return humn_text, scalefactor, unit, quantity
-        elif isinstance(value, (np.int_, np.float_)):
+        elif isinstance(value, (np.int_, np.float_, int, float)):
             if attribute in ["budget", "revenue"]:
                 val_ord = np.floor(np.log10(value))
                 options = []
                 if val_ord < 6 :
-                    num0 = round(value/1000, 1)*1000
+                    prec=1
+                    num0 = round(value/1000, prec)*1000
+                    while num0 == 0: 
+                        num0 = round(value/1000, prec)*1000
+                        prec += 1
                     options.extend([
-                        (humanize.intword(value, '%.1f'), 'thousand', 'dollar', int(num0)), (f'${num0/1000:.1f} thousand', 'thousand', 'dollar', int(num0))
+                        (humanize.intword(value, f'%.{prec}f'), 'thousand', 'dollar', float(num0)), (f'${num0/1000:.{prec}f} thousand', 'thousand', 'dollar', float(num0))
                     ])
                     return random.choice(options)
                 if val_ord >= 8 :
@@ -114,7 +148,13 @@ def generate_human_readable(value, attribute, oprn):
             elif attribute == "vote_average":
                 options = [f'{value:.2f}', f"{value:.2f}/10", f"{value:.2f} stars", f"{value:.2f}/10 stars"]
                 return random.choice(options), "unity", "star", round(value,2)
-    except: KeyError(f'{value} value unknown . attribute {attribute} , {type(value)} ') 
+        else:
+            raise KeyError(f'{value} value unknown . attribute {attribute} , {type(value)}\n'
+                           f'')
+    except Exception as e:
+        print('error in assigning!')
+        print(f'{value} value unknown . attribute {attribute} , {type(value)}')
+        raise e
     raise KeyError(f'{value} value unknown . attribute {attribute} , {type(value)}')
     return str(value), "unity", "unknown", 
 
@@ -132,9 +172,11 @@ def insert_numbers(templates, numbers, random_seed=None):
             attr_type = num["type"]
             operation = num["operation"]
             
-            # Select a random number from the numbers dict for this attribute
+            # Select a random number or call a random sampler from the numbers dict for this attribute
             plausible_values = numbers[attr_type]
-            selected_value = random.choice(plausible_values)
+            if callable(plausible_values):
+                selected_value = plausible_values()
+            else: selected_value = random.choice(plausible_values)
             
             # Generate human-readable value
             human_readable, scalefactor, unit, quantity = generate_human_readable(selected_value, attr_type, operation)
@@ -187,9 +229,7 @@ def fix_operands(q_list, alloperations):
                     temp = []
             else: query['operands'][n['operation']].append(n['index'])
 
-# Fetch and Rank the correct documents from the annotations
-def r_and_r_docs(query_list, numbers_df, debug=False):
-    thresholds = {
+thresholds_def = {          # Default threshold values, used for scaling rank scores
         'revenue': int(100e6),
         'budget': int(20e6),
         'runtime': 10,
@@ -199,8 +239,7 @@ def r_and_r_docs(query_list, numbers_df, debug=False):
         'no_production_companies': 2,
         'no_production_countries': 2,
     }
-
-    cutoffs = {
+cutoffs_def = {
         'revenue': int(700e6),                  # not more than 700M away
         'budget': int(70e6),                    # not more than 70M away
         'runtime': 30,                          # not more than 30 minutes away
@@ -210,37 +249,38 @@ def r_and_r_docs(query_list, numbers_df, debug=False):
         'no_production_companies': 9,           # not more than 9 numbers away
         'no_production_countries': 7,           # not more than 7 numbers away
     }
-
+# Fetch and Rank the correct documents from the annotations
+def r_and_r_docs(query_list, numbers_df, thresholds=thresholds_def, cutoffs=cutoffs_def, debug=DEBUG):
     def around_(x):
-        return abs(x-targetval) < thresholds[type_]
+        return abs(x-targetval) <= thresholds[type_]
     def around_rk(x):
-        return abs(x-targetval) / thresholds[type_]
+        return abs(x-targetval) / (thresholds[type_] or thresholds_def[type_])
     def lessthan_(x):
-        return -cutoffs[type_]*grabf<x-targetval<thresholds[type_]
+        return -cutoffs[type_]*grabf<=x-targetval<=thresholds[type_]
     def lessthan_rk(x):
         return (np.vectorize(lambda x: -(x-targetval)/(cutoffs[type_]*grabf) if x<=targetval else 1+(x-targetval)/(cutoffs[type_]*grabf)))(x)
     def greaterthan_(x):
-        return  cutoffs[type_]*grabf>x-targetval>-thresholds[type_]
+        return  cutoffs[type_]*grabf>=x-targetval>=-thresholds[type_]
     def greaterthan_rk(x):
         return (np.vectorize(lambda x:  (x-targetval)/(cutoffs[type_]*grabf) if x>=targetval else 1-(x-targetval)/(cutoffs[type_]*grabf)))(x)
     def atmost_(x):
-        return -cutoffs[type_]*grabf+targetval<x<=targetval
+        return -cutoffs[type_]*grabf+targetval<=x<=targetval
     def atmost_rk(x):
         return (np.vectorize(lambda x:  (x-targetval)/(cutoffs[type_]*grabf)))(x)
     def atleast_(x):
-        return  cutoffs[type_]*grabf+targetval>x>=targetval
+        return  cutoffs[type_]*grabf+targetval>=x>=targetval
     def atleast_rk(x):
         return (np.vectorize(lambda x: -(x-targetval)/(cutoffs[type_]*grabf)))(x)
     def exact_(x):
-        return targetval[0]<x<targetval[1] if isinstance(targetval,tuple) else x==targetval
+        return targetval[0]<=x<=targetval[1] if isinstance(targetval,tuple) else x==targetval
     def exact_rk(x):
         return np.vectorize(lambda x: 1)(x)
     def between_(x):
-        return targetval[0]<x<targetval[1]
+        return targetval[0]<=x<=targetval[1]
     def between_rk(x):
         return np.vectorize(lambda x: 1)(x)
     def in_(x):
-        return targetval[0]<x<targetval[1]
+        return targetval[0]<=x<=targetval[1]
     def in_rk(x):
         return np.vectorize(lambda x: 1)(x)
     operations_filter = {
@@ -328,7 +368,11 @@ def r_and_r_docs(query_list, numbers_df, debug=False):
                     if debug: print(rter)
 
             assert len(indiretr)>0 , "Empty retrieve docs. " + f"q={query['q']}\nnums={query['nums']} \noperands={query['operands']}"
+            if debug: print(f"No. of independent table rows fetched: {len(indiretr)}")
             combret = indiretr.pop()
+            if len(combret)==0: 
+                grabf += 0.25
+                if debug: print('!'*30+f'\nRedoing with grabf={grabf} because empty set')
             while len(indiretr) > 0:
                 nextret = indiretr.pop()
                 combret = pd.merge(combret, nextret, how='inner', on=['id','title'], suffixes=('_L','_R'))
@@ -336,7 +380,7 @@ def r_and_r_docs(query_list, numbers_df, debug=False):
                 if debug: print(combret)
                 if len(combret)==0: 
                     grabf += 0.25
-                    if debug: print('!'*30+f'\nRedoing with grabf={grabf}')
+                    if debug: print('!'*30+f'\nRedoing with grabf={grabf} because empty set')
                     break
                 combret['score'] = combret['score_L']+combret['score_R']
                 combret = combret.drop(columns=['score_L','score_R'])
@@ -346,7 +390,7 @@ def r_and_r_docs(query_list, numbers_df, debug=False):
         combret = combret.sort_values(by='score').drop(columns='score')
         if len(combret)>MAX_RET: combret = combret.iloc[:MAX_RET,:]
         q_ret_pairs.append({'q':query['q'], 'qid':query['qid'], 'rrdf':combret})
-        if debug: break
+        # if debug: break
     return q_ret_pairs
 
 def inspect_elements(q_list):
@@ -362,53 +406,99 @@ def inspect_elements(q_list):
 
 
 if __name__=='__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--filename", type=str, required=True, help="the file containing empty queries")
+    parser.add_argument("-o", "--output", type=str, required=True, help="path/name to output the constructed queries")
+    parser.add_argument("-v", "--debug", action='store_true')
+    parser.add_argument("-r", "--repeat", type=int, default=0, help="number of time to iterate over same templates file")
+    parser.add_argument("-c", "--config", type=str, help="file containing custom parameters")
+    parser.add_argument("--randomseed", type=int, help="seed value for the whole process")
+
+    args = parser.parse_args()
+    DEBUG = args.debug or DEBUG
+    SEED = args.randomseed or SEED
+    random.seed(SEED)
+
+    # Set parameters
+    Deltas = Deltas_def
+    thresholds = thresholds_def
+    cutoffs = cutoffs_def
+    uniform = False
+    ssize = ssize_def
+    # Set custom config parameters if given
+    if args.config != None :
+        with open(args.config,'r') as c:
+            config = json.load(c)
+        Deltas = config['Deltas'] or Deltas
+        thresholds = config['thresholds'] or thresholds
+        cutoffs = config['cutoffs'] or cutoffs
+        uniform = config['uniform'] or uniform
+        ssize = config['ssize'] or ssize
+            
+    # Construct numbes dict accordingly
+    numbers = collect_numbers(Deltas, uniform=uniform, sample_size=ssize)
+
     # Open the file that has queries templates with basic annotation
-    print("Opening file with basic annotation template...")
-    with open('empty_templates.json', 'r') as f:
+    print(f"Opening file {args.filename} with basic annotation template...")
+    with open(args.filename, 'r') as f:
         empty_templates = json.load(f)
-
     # and fill in with plausible numbers randomly and annotate them fully 
-    numified_queries = insert_numbers(empty_templates, numbers, random_seed=SEED)
-    print(f'No. of queries constructed: {len(numified_queries)}\n'+'-'*70)
+    # repeat given number of times for varieties
 
-    numb_positions(numified_queries)
-    print("Position marked.\n"+'-'*70)
+    for iterationno in range(args.repeat+1):
+        numified_queries = insert_numbers(empty_templates, numbers, random_seed=SEED)
+        print(f'No. of queries constructed: {len(numified_queries)}\n'+'-'*70)
 
-    make_digest_qids(numified_queries)
-    print("Query ids constructed.\n"+'-'*70)
+        numb_positions(numified_queries)
+        print("Position marked.\n"+'-'*70)
 
-    all_operations = ['exact','around','between','in','greaterthan','lessthan','atleast','atmost']
-    fix_operands(numified_queries, all_operations)
-    print("Operands defined.\n"+'-'*70)
+        make_digest_qids(numified_queries)
+        print("Query ids constructed.\n"+'-'*70)
 
-    # Review query sample
-    inspect_elements(numified_queries)
+        all_operations = ['exact','around','between','in','greaterthan','lessthan','atleast','atmost']
+        fix_operands(numified_queries, all_operations)
+        print(f"Operands defined for operations: {all_operations} \n"+'-'*70)
 
-    print('-'*70+"\nGoing to retrieve and rank docs for each query...")
-    q_a_docs = r_and_r_docs(numified_queries, ndf)
-    print("Done !")
-    countempty = 0
-    empty_rrdfs = []
-    for i, QR in enumerate(q_a_docs):
-        if len(QR['rrdf'])==0:
-            countempty += 1
-            empty_rrdfs.append((i,QR['qid']))
-    print(f'No. of empty docs: {countempty}')
-    pprint(f'ids of queries with no retrieved docs: {empty_rrdfs}')
-    # Review query-doc pairs
-    import pydoc
-    text = pformat(numified_queries, indent=4, width=150, sort_dicts=False)+\
-                '\n'+'#'*130+'\n          R&R docs:\n'+'#'*130+'\n'+\
-                pformat(q_a_docs, indent=4, width=150, sort_dicts=False)
-    pydoc.pager(text)
-
-    file_to_write_final = input("Enter filename to save final queries-docs pairs: ") or 'full_annot_queries.json'
-    confmtn = input(f"Confirm writing to file '{file_to_write_final}'. [y|N] : ")
-    if confmtn == 'y':
-        for qrd, qd in zip(numified_queries,q_a_docs): qrd['retindxs'] = list(qd['rrdf']['id'])
+        # Review query sample
+        wait = input('see queries...')
         for q in numified_queries:
             for n in q['nums']:
-                if isinstance(n['quantity'], np.int64): n['quantity'] = int(n['quantity'])
-        with open(file_to_write_final, '+w') as f:
-            json.dump(numified_queries, f, indent=4,)
-        print(f"Written to file {file_to_write_final}.")
+                if isinstance(n['quantity'], np.int_): n['quantity'] = int(n['quantity'])
+        inspecttext = "Inspect Queries with numbers replaced : \n"
+        inspecttext += f"Total no. of queries : {len(numified_queries)}\n\n"
+        inspecttext += json.dumps(numified_queries, indent=4) + '\n\n'
+        inspecttext += 'Queries with position markers:\n'
+        for q in numified_queries: inspecttext += display_q(q) + '\n'
+        pydoc.pager(inspecttext)
+        # inspect_elements(numified_queries)
+
+        print('-'*70+"\nGoing to retrieve and rank docs for each query...")
+        q_a_docs = r_and_r_docs(numified_queries, ndf, thresholds, cutoffs, debug=DEBUG)
+        print("Done !")
+        countempty = 0
+        empty_rrdfs = []
+        for i, QR in enumerate(q_a_docs):
+            if len(QR['rrdf'])==0:
+                countempty += 1
+                empty_rrdfs.append((i,QR['qid']))
+        print(f'No. of empty docs: {countempty}')
+        print(f'ids of queries with no retrieved docs: ')
+        pprint(empty_rrdfs)
+        # Review query-doc pairs
+        text = '#'*130+'\n          R&R docs:\n'+'#'*130+'\n'+\
+                    pformat(q_a_docs, indent=4, width=150, sort_dicts=False)
+        pydoc.pager(text)
+
+        file_to_write_final = 'run'+str(iterationno)+'_'+args.output
+        confmtn = input(f"Confirm writing to file '{file_to_write_final}' or rename?  [y|N] : ")
+        if confmtn == 'N':
+            file_to_write_final = input("Enter filename to save final queries-docs pairs: ") or file_to_write_final
+            confmtn = input(f"Confirm writing to file '{file_to_write_final}'. [y|N] : ")
+        if confmtn == 'y':
+            for qrd, qd in zip(numified_queries,q_a_docs): qrd['retindxs'] = list(qd['rrdf']['id'])
+            for q in numified_queries:
+                for n in q['nums']:
+                    if isinstance(n['quantity'], np.int64): n['quantity'] = int(n['quantity'])
+            with open(file_to_write_final, '+w') as f:
+                json.dump(numified_queries, f, indent=4,)
+            print(f"Written to file {file_to_write_final}")
